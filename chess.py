@@ -29,14 +29,14 @@ def init_pieces(player):
                  "5,0":(BISHOP_NAME, bishop_img, player),
                  "6,0":(KNIGHT_NAME, knight_img, player),
                  "7,0":(ROOK_NAME, rook_img, player),
-                 "0,1":(PAWN_NAME, pawn_img, player),
-                 "1,1":(PAWN_NAME, pawn_img, player),
-                 "2,1":(PAWN_NAME, pawn_img, player),
-                 "3,1":(PAWN_NAME, pawn_img, player),
-                 "4,1":(PAWN_NAME, pawn_img, player),
-                 "5,1":(PAWN_NAME, pawn_img, player),
-                 "6,1":(PAWN_NAME, pawn_img, player),
-                 "7,1":(PAWN_NAME, pawn_img, player)}
+                 "0,1":(PAWN_NAME, pawn_img, player, False),
+                 "1,1":(PAWN_NAME, pawn_img, player, False),
+                 "2,1":(PAWN_NAME, pawn_img, player, False),
+                 "3,1":(PAWN_NAME, pawn_img, player, False),
+                 "4,1":(PAWN_NAME, pawn_img, player, False),
+                 "5,1":(PAWN_NAME, pawn_img, player, False),
+                 "6,1":(PAWN_NAME, pawn_img, player, False),
+                 "7,1":(PAWN_NAME, pawn_img, player, False)}
     else:
         board = {"0,7":(ROOK_NAME, rook_img, player),
                  "1,7":(KNIGHT_NAME, knight_img, player),
@@ -46,14 +46,14 @@ def init_pieces(player):
                  "5,7":(BISHOP_NAME, bishop_img, player),
                  "6,7":(KNIGHT_NAME, knight_img, player),
                  "7,7":(ROOK_NAME, rook_img, player),
-                 "0,6":(PAWN_NAME, pawn_img, player),
-                 "1,6":(PAWN_NAME, pawn_img, player),
-                 "2,6":(PAWN_NAME, pawn_img, player),
-                 "3,6":(PAWN_NAME, pawn_img, player),
-                 "4,6":(PAWN_NAME, pawn_img, player),
-                 "5,6":(PAWN_NAME, pawn_img, player),
-                 "6,6":(PAWN_NAME, pawn_img, player),
-                 "7,6":(PAWN_NAME, pawn_img, player)}
+                 "0,6":(PAWN_NAME, pawn_img, player, False),
+                 "1,6":(PAWN_NAME, pawn_img, player, False),
+                 "2,6":(PAWN_NAME, pawn_img, player, False),
+                 "3,6":(PAWN_NAME, pawn_img, player, False),
+                 "4,6":(PAWN_NAME, pawn_img, player, False),
+                 "5,6":(PAWN_NAME, pawn_img, player, False),
+                 "6,6":(PAWN_NAME, pawn_img, player, False),
+                 "7,6":(PAWN_NAME, pawn_img, player, False)}
     return board
 
 def get_coord(x, y, tile_size):
@@ -104,7 +104,7 @@ def get_multi_moves(board, coord, x_move, y_move):
     opponent_checked = False
     while ((check_bounds(temp_x, temp_y) and
             ((temp_coord not in board) or
-             (temp_coord in board and board[temp_coord][2] != board[coord][2] 
+             (temp_coord in board and board[temp_coord][2] != board[coord][2]
               and not opponent_checked)))):
 
         if temp_coord in board and board[temp_coord][2] != board[coord][2]:
@@ -127,17 +127,21 @@ def get_valid_pawn_moves(board, coord):
 
     curr_coord = f"{x},{temp_y}"
     if check_bounds(x, temp_y) and curr_coord not in board:
-        valids.append(f"{x},{temp_y}")
+        valids.append(curr_coord)
+        curr_coord = f"{x},{temp_y+move}"
+        if curr_coord not in board and not board[coord][3]:
+            board[coord] = board[coord][:3] + (True,)
+            valids.append(curr_coord)
 
     curr_coord = f"{x+1},{temp_y}"
     if (check_bounds(x+1, temp_y) and
             curr_coord in board and board[curr_coord][2] != board[coord][2]):
-        valids.append(f"{x+1},{temp_y}")
+        valids.append(curr_coord)
 
     curr_coord = f"{x-1},{temp_y}"
     if (check_bounds(x-1, temp_y) and
             curr_coord in board and board[curr_coord][2] != board[coord][2]):
-        valids.append(f"{x-1},{temp_y}")
+        valids.append(curr_coord)
 
     return valids
 
